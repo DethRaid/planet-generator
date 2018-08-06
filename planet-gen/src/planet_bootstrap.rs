@@ -1,17 +1,23 @@
+use std::collections::HashMap;
+
 /// Generates the initial values for the planets: size, distance from sun, composition, etc
 
 /// All the elements or compounds that a planet can be made out of, and the chances of them spawning in a layer
 #[derive(Hash, Eq, PartialEq)]
 pub enum PlanetElement {
     Hydrogen,
+    HydrogenSulfide,
+    HydrogenCyanide,
     Water,
     Helium,
 
     Lithium,
     Carbon,
+    CarbonMonoxide,
     CarbonDioxide,
     Methane,
     Ammonia,
+    AmmoniumSulfide,
     Neon,
 
     Sodiun,
@@ -47,19 +53,42 @@ pub enum PlanetElement {
     Thorium,
     Uranium,
     Plutonium,
-},
+}
+
+#[derive(Hash, Eq, PartialEq)]
+pub enum ElementSpawnLocation {
+    Atmosphere,
+    Core,
+    Both,
+}
+
+/// The data for how to spawn a given element
+pub struct ElementSpawnData {
+    /// How likely that this element will be spawned. I Monte-carlo sample the element probabilities to get the 
+    /// composition of the layer. 
+    /// 
+    /// Composition is by volume
+    pub probability: f32,
+
+    /// The location where this element may be found. Certain elements can only be spawned in certain locations
+    pub spawn_location: ElementSpawnLocation,
+}
 
 impl PlanetElement {
-    fn spawn_data(element : PlanetElement) {
+    fn spawn_data(element : PlanetElement) -> ElementSpawnData {
         match element {
-            PlanetElement::Hydrogen => (),
+            PlanetElement::Hydrogen => ElementSpawnData { probability: 0.8, spawn_location: ElementSpawnLocation::Atmosphere },
+            PlanetElement::HydrogenSulfide => (),
+            PlanetElement::HydrogenCyanide => (),
             PlanetElement::Water => (),
             PlanetElement::Helium => (),
             PlanetElement::Lithium => (),
             PlanetElement::Carbon => (),
             PlanetElement::CarbonDioxide => (),
+            PlanetElement::CarbonMonoxide => (),
             PlanetElement::Methane => (),
             PlanetElement::Ammonia => (),
+            PlanetElement::AmmoniumSulfide => (),
             PlanetElement::Neon => (),
             PlanetElement::Sodiun => (),
             PlanetElement::Magnesium => (),
@@ -94,30 +123,6 @@ impl PlanetElement {
     }
 }
 
-/// All the elements or compounds that might be found in a planet's atmosphere
-enum AtmosphereElement {
-    Hydrogen,
-    HydrogenSulfide,
-    HydrogenCyanide,
-    Water,
-
-    Helium,
-
-    CarbonMonoxide,
-    CarbonDioxide,
-    Methane,
-
-    Nitrogen,
-    Ammonia,
-    AmmoniumSulfide,
-
-    Oxygen,
-    
-    SulfurDioxide,
-
-    Argon,
-}
-
 /// A layer in a planet. ALl parts of the planet, including its atmosphere, are layers
 pub struct PlanetLayer {
     /// The elemental(ish) composition of this layer. 
@@ -140,7 +145,7 @@ pub struct InitialPlanetParams {
     pub orbital_period: f32,
 
     /// The number of Earth days it takes for this planet to make one full rotation
-    pub rotational_period: f32;
+    pub rotational_period: f32,
 
     /// The age of the planet when the player finds it, in Earth years. Ranges from one thousand to thirteen billion 
     /// - Can't have planets older than the universe!
