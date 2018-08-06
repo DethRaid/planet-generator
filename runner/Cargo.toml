@@ -1,0 +1,8 @@
+[package]
+workspace = ".."
+name = "runner"
+version = "0.1.0"
+authors = ["David Dubois <dexcelstraun7@gmail.com>"]
+
+[dependencies]
+planet-gen = { path = "../planet-gen" }

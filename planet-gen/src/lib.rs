@@ -47,7 +47,9 @@
 /// 
 /// Every time a civilization falls, there's chance for another one to rise again. Each fallen civilization halves the 
 /// time until the next civilization rises - a civilization builds upon its predecessors
-/// 
+///
+
+pub mod planet_bootstrap;
 
 #[no_mangle]
 pub extern "C" fn gen_planet() {

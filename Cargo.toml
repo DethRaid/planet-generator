@@ -1,6 +1,5 @@
-[package]
-name = "planet-gen"
-version = "0.1.0"
-authors = ["David Dubois <dexcelstraun7@gmail.com>"]
-
-[dependencies]
+[workspace]
+members = [
+    "planet-gen",
+    "runner"
+]

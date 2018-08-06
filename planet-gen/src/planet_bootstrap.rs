@@ -14,7 +14,7 @@ enum PlanetElement {
     SulfurDioxide,
     Argon,
     Neon,
-},
+};
 
 /// A layer in a planet. ALl parts of the planet, including its atmosphere, are layers
 struct PlanetLayer {
