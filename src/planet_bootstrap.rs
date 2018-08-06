@@ -1,20 +1,121 @@
 /// Generates the initial values for the planets: size, distance from sun, composition, etc
 
-/// All the elements that a planet can be made out of
+/// All the elements or compounds that a planet can be made out of, and the chances of them spawning in a layer
 enum PlanetElement {
     Hydrogen,
-    Helium,
-    Carbon,
     Water,
+    Helium,
+
+    Lithium,
+    Carbon,
+    CarbonDioxide,
     Methane,
     Ammonia,
-    Iron,
-    Silica,
-    Nitrogen,
-    SulfurDioxide,
-    Argon,
     Neon,
+
+    Sodiun,
+    Magnesium,
+    Aluminum,
+    Silica,
+    Phosphorous,
+    Sulfur,
+    SulfurDioxide,
+    Chlorine,
+    Argon,
+
+    Calcium,
+    Titanium,
+    Chromium,
+    Iron,
+    Cobalt,
+    Nickel,
+    Copper,
+    Zinc,
+    Boromine,
+
+    Silver,
+    Iodine,
+
+    Tungstein,
+    Platinum,
+    Gold,
+    Mercury,
+    Lead,
+    Radon,
+
+    Thorium,
+    Uranium,
+    Plutonium,
 },
+
+impl PlanetElement {
+    fn spawn_data(element : PlanetElement) {
+        match element {
+            PlanetElement::Hydrogen => (),
+            PlanetElement::Water => (),
+            PlanetElement::Helium => (),
+            PlanetElement::Lithium => (),
+            PlanetElement::Carbon => (),
+            PlanetElement::CarbonDioxide => (),
+            PlanetElement::Methane => (),
+            PlanetElement::Ammonia => (),
+            PlanetElement::Neon => (),
+            PlanetElement::Sodiun => (),
+            PlanetElement::Magnesium => (),
+            PlanetElement::Aluminum => (),
+            PlanetElement::Silica => (),
+            PlanetElement::Phosphorous => (),
+            PlanetElement::Sulfur => (),
+            PlanetElement::SulfurDioxide => (),
+            PlanetElement::Chlorine => (),
+            PlanetElement::Argon => (),
+            PlanetElement::Calcium => (),
+            PlanetElement::Titanium => (),
+            PlanetElement::Chromium => (),
+            PlanetElement::Iron => (),
+            PlanetElement::Cobalt => (),
+            PlanetElement::Nickel => (),
+            PlanetElement::Copper => (),
+            PlanetElement::Zinc => (),
+            PlanetElement::Boromine => (),
+            PlanetElement::Silver => (),
+            PlanetElement::Iodine => (),
+            PlanetElement::Tungstein => (),
+            PlanetElement::Platinum => (),
+            PlanetElement::Gold => (),
+            PlanetElement::Mercury => (),
+            PlanetElement::Lead => (),
+            PlanetElement::Radon => (),
+            PlanetElement::Thorium => (),
+            PlanetElement::Uranium => (),
+            PlanetElement::Plutonium => (),
+        }
+    }
+}
+
+/// All the elements or compounds that might be found in a planet's atmosphere
+enum AtmosphereElement {
+    Hydrogen,
+    HydrogenSulfide,
+    HydrogenCyanide,
+    Water,
+
+    Helium,
+
+    CarbonMonoxide,
+    CarbonDioxide,
+    Methane,
+
+    Nitrogen,
+    Ammonia,
+    AmmoniumSulfide,
+
+    Oxygen,
+    
+    SulfurDioxide,
+
+    Argon,
+}
 
 /// A layer in a planet. ALl parts of the planet, including its atmosphere, are layers
 struct PlanetLayer {
@@ -34,7 +135,11 @@ struct InitialPlanetParams {
     /// system
     pub distance_from_sun : u64 = 0;
 
+    /// The number of Earth years that it takes the planet to orbit its star
     pub orbital_period : f32 = 0;
+
+    /// The number of Earth days it takes for this planet to make one full rotation
+    pub rotational_period : f32 = 0;
 
     /// The age of the planet when the player finds it, in Earth years. Ranges from one thousand to thirteen billion 
     /// - Can't have planets older than the universe!
@@ -55,5 +160,7 @@ struct InitialPlanetParams {
     pub mass : u64 = 0;
 
     /// All the layers that compose this planet
+    /// 
+    /// The planet's layers start at the center and go to the edge of the playet's radius. They're then integrated to get the total mass of the planet, which determines its gravity. More gravity = more atmosphere, at least initially
     pub layers : Vec<PlanetLayer>;
 };
