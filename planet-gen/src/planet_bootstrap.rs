@@ -1,4 +1,7 @@
+extern crate rand;
+
 use std::collections::HashMap;
+use rand::distributions::{Normal, Distribution};
 
 /// Generates the initial values for the planets: size, distance from sun, composition, etc
 
@@ -8,7 +11,7 @@ pub enum PlanetElement {
     Hydrogen,
     HydrogenSulfide,
     HydrogenCyanide,
-    Water,
+    Water,      
     Helium,
 
     Lithium,
@@ -16,11 +19,13 @@ pub enum PlanetElement {
     CarbonMonoxide,
     CarbonDioxide,
     Methane,
+    Nitrogen,
     Ammonia,
     AmmoniumSulfide,
     Neon,
 
-    Sodiun,
+    Sodium,
+    TableSalt,
     Magnesium,
     Aluminum,
     Silica,
@@ -30,6 +35,7 @@ pub enum PlanetElement {
     Chlorine,
     Argon,
 
+    Potassium,
     Calcium,
     Titanium,
     Chromium,
@@ -86,10 +92,12 @@ impl ElementSpawnData {
 impl PlanetElement {
     fn spawn_data(element : PlanetElement) -> ElementSpawnData {
         match element {
+            // In atmosphere from solar winds
             PlanetElement::Hydrogen         => ElementSpawnData::new(0.8, ElementSpawnLocation::Atmosphere),
             PlanetElement::HydrogenSulfide  => ElementSpawnData::new(0.8, ElementSpawnLocation::Atmosphere),
             PlanetElement::HydrogenCyanide  => ElementSpawnData::new(0.8, ElementSpawnLocation::Atmosphere),
             PlanetElement::Water            => ElementSpawnData::new(0.8, ElementSpawnLocation::Both),
+            // In atmosphere from solar winds
             PlanetElement::Helium           => ElementSpawnData::new(0.8, ElementSpawnLocation::Atmosphere),
 
             PlanetElement::Lithium          => ElementSpawnData::new(0.8, ElementSpawnLocation::Core),
@@ -97,21 +105,27 @@ impl PlanetElement {
             PlanetElement::CarbonDioxide    => ElementSpawnData::new(0.8, ElementSpawnLocation::Both),
             PlanetElement::CarbonMonoxide   => ElementSpawnData::new(0.8, ElementSpawnLocation::Atmosphere),
             PlanetElement::Methane          => ElementSpawnData::new(0.8, ElementSpawnLocation::Both),
+            PlanetElement::Nitrogen         => ElementSpawnData::new(0.8, ElementSpawnLocation::Atmosphere),
             PlanetElement::Ammonia          => ElementSpawnData::new(0.8, ElementSpawnLocation::Both),
             PlanetElement::AmmoniumSulfide  => ElementSpawnData::new(0.8, ElementSpawnLocation::Atmosphere),
             PlanetElement::Neon             => ElementSpawnData::new(0.8, ElementSpawnLocation::Atmosphere),
 
-            PlanetElement::Sodiun           => ElementSpawnData::new(0.8, ElementSpawnLocation::Core),
-            PlanetElement::Magnesium        => ElementSpawnData::new(0.8, ElementSpawnLocation::Core),
+            // In atmosphere from meteorites vaporizing, can be emitted by the planet
+            PlanetElement::Sodium           => ElementSpawnData::new(0.8, ElementSpawnLocation::Both),
+            PlanetElement::TableSalt        => ElementSpawnData::new(0.8, ElementSpawnLocation::Core),
+            PlanetElement::Magnesium        => ElementSpawnData::new(0.8, ElementSpawnLocation::Both),
             PlanetElement::Aluminum         => ElementSpawnData::new(0.8, ElementSpawnLocation::Core),
             PlanetElement::Silica           => ElementSpawnData::new(0.8, ElementSpawnLocation::Core),
-            PlanetElement::Phosphorous      => ElementSpawnData::new(0.8, ElementSpawnLocation::Core),
+            PlanetElement::Phosphorous      => ElementSpawnData::new(0.8, ElementSpawnLocation::Both),
             PlanetElement::Sulfur           => ElementSpawnData::new(0.8, ElementSpawnLocation::Core),
             PlanetElement::SulfurDioxide    => ElementSpawnData::new(0.8, ElementSpawnLocation::Atmosphere),
             PlanetElement::Chlorine         => ElementSpawnData::new(0.8, ElementSpawnLocation::Core),
             PlanetElement::Argon            => ElementSpawnData::new(0.8, ElementSpawnLocation::Atmosphere),
 
-            PlanetElement::Calcium          => ElementSpawnData::new(0.8, ElementSpawnLocation::Core),
+            // In atmosphere from meteorites vaporizing
+            PlanetElement::Potassium        => ElementSpawnData::new(0.8, ElementSpawnLocation::Both),
+            // In atmosphere from meteorites vaporizing
+            PlanetElement::Calcium          => ElementSpawnData::new(0.8, ElementSpawnLocation::Both),
             PlanetElement::Titanium         => ElementSpawnData::new(0.8, ElementSpawnLocation::Core),
             PlanetElement::Chromium         => ElementSpawnData::new(0.8, ElementSpawnLocation::Core),
             PlanetElement::Iron             => ElementSpawnData::new(0.8, ElementSpawnLocation::Core),
@@ -188,6 +202,23 @@ pub struct InitialPlanetParams {
 
 impl Default for InitialPlanetParams {
     fn default() -> Self {
+        InitialPlanetParams {
+            distance_from_sun: 0,
+            orbital_period: 0.0,
+            rotational_period: 0.0,
+            age: 0,
+            is_gas_giant: false,
+            radius: 0,
+            mass: 0,
+            layers: Vec::new()
+        }
+    }
+}
+
+impl InitialPlanetParams {
+    fn new() -> Self {
+        let distance_from_sun_dist = Normal::new(1264789393, 1621734335);
+        
         InitialPlanetParams {
             distance_from_sun: 0,
             orbital_period: 0.0,
