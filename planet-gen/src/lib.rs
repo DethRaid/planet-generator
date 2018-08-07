@@ -1,3 +1,5 @@
+#![feature(extern_prelude)]
+
 /// The functions in this file generate a planet, psuedo-randomly. While realism is a strong concern, I have made many
 /// assumptions where little or no real-world data was available, and have broken from reality a bit to generate 
 /// intersting, unique planets. E.G. IRL a gas giant in one solar system has little to no effect on the possibility of
@@ -49,7 +51,12 @@
 /// time until the next civilization rises - a civilization builds upon its predecessors
 ///
 
+extern crate rand;
+
 pub mod planet_bootstrap;
+
+mod initial_planet_data;
+mod planet_layer_generation;
 
 #[no_mangle]
 pub extern "C" fn gen_planet() {
