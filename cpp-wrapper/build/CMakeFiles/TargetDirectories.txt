@@ -1,3 +1,0 @@
-E:/Documents/PlanetGenerator/cpp-wrapper/build/CMakeFiles/PlanetGenWrapper.dir
-E:/Documents/PlanetGenerator/cpp-wrapper/build/CMakeFiles/ALL_BUILD.dir
-E:/Documents/PlanetGenerator/cpp-wrapper/build/CMakeFiles/ZERO_CHECK.dir
