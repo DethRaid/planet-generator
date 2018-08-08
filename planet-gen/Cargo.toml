@@ -6,3 +6,4 @@ authors = ["David Dubois <dexcelstraun7@gmail.com>"]
 
 [dependencies]
 rand = "0.5.4"
+serde = "1.0.71"

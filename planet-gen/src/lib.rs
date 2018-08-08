@@ -56,9 +56,10 @@ extern crate rand;
 pub mod planet_bootstrap;
 
 mod initial_planet_data;
-mod planet_layer_generation;
+
+use initial_planet_data::InitialPlanetParams;
 
 #[no_mangle]
 pub extern "C" fn gen_planet() {
-
+    let planet = InitialPlanetParams::new();
 }
