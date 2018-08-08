@@ -1,8 +1,8 @@
 /// All the data structures needed to start generating a planet
 
-use std::collections::HashMap;
-
 /// High-level guess at what kind of planet we want. Different kinds of planets have different layers - this is a nice shorthand
+#[derive(Serialize, Deserialize, Debug, Copy, Clone)]
+#[repr(C)]
 pub enum PlanetType {
     Rocky,
     Gassy,
@@ -100,6 +100,8 @@ impl ElementSpawnData {
 }
 
 /// The very initial parameters for planet generation. Essentially the seed for the planet generation algorithm
+#[derive(Serialize, Deserialize, Debug, Copy, Clone)]
+#[repr(C)]
 pub struct InitialPlanetParams {
     /// The distance, in kilometers, from the planet to its star
     pub distance_from_sun: u64,

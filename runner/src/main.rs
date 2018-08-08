@@ -2,5 +2,5 @@
 extern crate planet_gen;
 
 fn main() {
-    println!("running");
+    planet_gen::gen_planet();
 }

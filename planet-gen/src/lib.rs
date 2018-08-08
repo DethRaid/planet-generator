@@ -1,5 +1,8 @@
 #![feature(extern_prelude)]
 
+#[macro_use]
+extern crate serde_derive;
+
 /// The functions in this file generate a planet, psuedo-randomly. While realism is a strong concern, I have made many
 /// assumptions where little or no real-world data was available, and have broken from reality a bit to generate 
 /// intersting, unique planets. E.G. IRL a gas giant in one solar system has little to no effect on the possibility of
@@ -49,9 +52,10 @@
 /// 
 /// Every time a civilization falls, there's chance for another one to rise again. Each fallen civilization halves the 
 /// time until the next civilization rises - a civilization builds upon its predecessors
-///
 
 extern crate rand;
+
+extern crate serde_json;
 
 pub mod planet_bootstrap;
 
@@ -60,6 +64,12 @@ mod initial_planet_data;
 use initial_planet_data::InitialPlanetParams;
 
 #[no_mangle]
-pub extern "C" fn gen_planet() {
+pub extern "C" fn gen_planet() -> InitialPlanetParams {
     let planet = InitialPlanetParams::new();
+
+    let serialized_planet = serde_json::to_string(&planet).unwrap();
+
+    println!("serialized = {}", serialized_planet);
+
+    planet
 }

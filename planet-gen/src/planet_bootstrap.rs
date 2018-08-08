@@ -1,5 +1,6 @@
 use rand::distributions::Normal;
 use rand::Rng;
+use std::cmp::max;
 
 use initial_planet_data::*;
 
@@ -31,7 +32,7 @@ impl InitialPlanetParams {
         let rotational_period_distro = Normal::new(40.52946268, 84.13874671);
         let radius_distro = Normal::new(0.35966285, 0.411208526);
 
-        let radius = RADIUS_OF_JUPITER * rng.sample(radius_distro) as u64;
+        let radius_raw = (RADIUS_OF_JUPITER as f64 * rng.sample(radius_distro)) as u64;
 
         let planet_type = match rng.gen_range(0, 3) {
             0 => PlanetType::Rocky,
@@ -45,7 +46,10 @@ impl InitialPlanetParams {
             rotational_period: rng.sample(rotational_period_distro),
             age: rng.gen_range(1000000, 13500000000),
             planet_type: planet_type,
-            radius: radius,
+            radius: match planet_type {
+                PlanetType::Gassy => max(RADIUS_OF_JUPITER, radius_raw),
+                _ => radius_raw
+                }
         }
     }
 }
