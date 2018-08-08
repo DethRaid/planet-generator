@@ -57,19 +57,27 @@ extern crate rand;
 
 extern crate serde_json;
 
-pub mod planet_bootstrap;
+pub mod bootstrap;
+pub mod output_data;
 
 mod initial_planet_data;
 
 use initial_planet_data::InitialPlanetParams;
+use output_data::*;
+
 
 #[no_mangle]
 pub extern "C" fn gen_planet() -> InitialPlanetParams {
-    let planet = InitialPlanetParams::new();
+    let planet = InitialPlanetParams::gen_random();
 
     let serialized_planet = serde_json::to_string(&planet).unwrap();
 
     println!("serialized = {}", serialized_planet);
 
     planet
+}
+
+#[no_mangle]
+pub extern "C" fn gen_solar_system() -> SolarSystem {
+
 }

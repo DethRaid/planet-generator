@@ -1,0 +1,3 @@
+[submodule "cpp-wrapper/3rdparty/rust-extern"]
+	path = cpp-wrapper/3rdparty/rust-extern
+	url = https://github.com/shadowmint/rust-extern

@@ -1,30 +1,18 @@
+/// Generates the initial values for the planets: size, distance from sun, composition, etc
+
 use rand::distributions::Normal;
 use rand::Rng;
 use std::cmp::max;
 
 use initial_planet_data::*;
-
-/// Generates the initial values for the planets: size, distance from sun, composition, etc
-
-impl Default for InitialPlanetParams {
-    fn default() -> Self {
-        InitialPlanetParams {
-            distance_from_sun: 0,
-            orbital_period: 0.0,
-            rotational_period: 0.0,
-            age: 0,
-            planet_type: PlanetType::Gassy,
-            radius: 0,
-        }
-    }
-}
+use output_data::*;
 
 /// Radius of Jupiter, in meters
 const RADIUS_OF_JUPITER: u64 = 69911000;
 
 impl InitialPlanetParams {
     /// Randonly generates a new planet, using distributions from real-world data
-    pub fn new() -> Self {
+    pub fn gen_random() -> Self {
         let mut rng = rand::thread_rng();
 
         let distance_from_sun_distro = Normal::new(1264789393.0, 1621734335.0);
