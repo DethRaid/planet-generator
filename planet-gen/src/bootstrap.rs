@@ -79,7 +79,7 @@ impl Planet {
         };
 
         std::mem::forget(vertices);
-        std::mem::forget(mesh.1);
+        std::mem::forget(ue4_triangles);
 
         ret_val
     }
