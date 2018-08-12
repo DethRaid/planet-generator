@@ -6,8 +6,8 @@ use glm::Vector3;
 
 #[repr(C)]
 pub struct Vertex {
-    pub position: Vector3<f32>,
-    pub normal: Vector3<f32>,
+    pub position: [f32; 3],
+    pub normal: [f32; 3],
 }
 
 #[repr(C)]

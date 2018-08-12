@@ -57,7 +57,8 @@ impl Planet {
         // This could me a map statement rn, but when I do more complex things for normals and UVs it won't be
         // Leaving like this for now
         for pos in positions {
-            vertices.push(Vertex{ position: pos, normal: normalize(pos) });
+            let normal = normalize(pos);
+            vertices.push(Vertex{ position: [pos.X, pos.Y, pos.Z], normal: [normal.X, normal.Y, normal.z] });
         }
 
         let mut ue4_triangles: Vec<i32> = Vec::new();
