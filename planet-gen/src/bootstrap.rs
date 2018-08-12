@@ -5,7 +5,10 @@ use rand::Rng;
 use std::cmp::max;
 
 use initial_planet_data::*;
+
 use output_data::*;
+
+use icosphere::make_icosphere;
 
 /// Radius of Jupiter, in meters
 const RADIUS_OF_JUPITER: u64 = 69911000;
@@ -38,6 +41,23 @@ impl InitialPlanetParams {
                 PlanetType::Gassy => max(RADIUS_OF_JUPITER, radius_raw),
                 _ => radius_raw
                 }
+        }
+    }
+}
+
+impl Planet {
+    pub fn initialize(initial_data: InitialPlanetParams) -> Self {
+        let mesh = make_icosphere(3);
+
+        Planet {
+            radius: initial_data.radius,
+            distance_from_sun: initial_data.distance_from_sun,
+
+            vertices: mesh.0.data(),
+            num_vertices: mesh.0.length(),
+            
+            indices: mesh.1.data(),
+            num_indices: mesh.1.length(),
         }
     }
 }

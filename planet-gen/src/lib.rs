@@ -48,26 +48,27 @@ extern crate serde_derive;
 /// change or war, and each has a different impact on the planet. More climate change means more extreme weather on the 
 /// planet, whilce war leaves behind scars upon the terrain. These scars are based on the tech level of the 
 /// civilization, with Type I leaving behind irradiated craters from nuclear bombs, Type II creating gorges that reach 
-/// the lower crust, and Type III shattering entier planets.
+/// the mantle, and Type III shattering entire planets.
 /// 
 /// Every time a civilization falls, there's chance for another one to rise again. Each fallen civilization halves the 
 /// time until the next civilization rises - a civilization builds upon its predecessors
 
 extern crate rand;
-
 extern crate serde_json;
+extern crate glm;
 
 pub mod bootstrap;
 pub mod output_data;
 
 mod initial_planet_data;
+mod icosphere;
 
 use initial_planet_data::InitialPlanetParams;
 use output_data::*;
 
 
 #[no_mangle]
-pub extern "C" fn gen_planet() -> InitialPlanetParams {
+pub extern "C" fn gen_planet() -> Planet {
     let planet = InitialPlanetParams::gen_random();
 
     let serialized_planet = serde_json::to_string(&planet).unwrap();
@@ -75,9 +76,4 @@ pub extern "C" fn gen_planet() -> InitialPlanetParams {
     println!("serialized = {}", serialized_planet);
 
     planet
-}
-
-#[no_mangle]
-pub extern "C" fn gen_solar_system() -> SolarSystem {
-
 }

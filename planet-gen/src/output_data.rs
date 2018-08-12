@@ -2,12 +2,25 @@
 
 use std::vec::Vec;
 
-#[derive(Serialize, Deserialize, Debug)]
+use glm::Vector3;
+
+#[repr(C)]
+pub struct Vertex {
+    position: Vector3<f32>,
+    normal: Vector3<f32>,
+}
+
 #[repr(C)]
 pub struct Planet {
     pub radius: u64,
 
     pub distance_from_sun: u64,
+
+    pub vertices: *mut Vertex,
+    pub num_vertices: u32,
+
+    pub indices: *mut u32,
+    pub num_indices: u32,
 }
 
 /// Represents a star in a solar system
@@ -22,7 +35,6 @@ pub struct Star {
 }
 
 /// A solar system, in all its glory
-#[derive(Serialize, Deserialize, Debug)]
 #[repr(C)]
 pub struct SolarSystem {
     /// All the stars in this solar system. Probably just one entry, but binary star systems are supported
