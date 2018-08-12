@@ -10,6 +10,8 @@ use output_data::*;
 
 use icosphere::make_icosphere;
 
+use glm::normalize;
+
 /// Radius of Jupiter, in meters
 const RADIUS_OF_JUPITER: u64 = 69911000;
 
@@ -49,15 +51,36 @@ impl Planet {
     pub fn initialize(initial_data: InitialPlanetParams) -> Self {
         let mesh = make_icosphere(3);
 
-        Planet {
+        let (positions, triangles) = mesh;
+
+        let mut vertices: Vec<Vertex> = Vec::new();
+        // This could me a map statement rn, but when I do more complex things for normals and UVs it won't be
+        // Leaving like this for now
+        for pos in positions {
+            vertices.push(Vertex{ position: pos, normal: normalize(pos) });
+        }
+
+        let mut ue4_triangles: Vec<i32> = Vec::new();
+        for tri in triangles {
+            ue4_triangles.push(tri[0] as i32);
+            ue4_triangles.push(tri[1] as i32);
+            ue4_triangles.push(tri[2] as i32);
+        }
+
+        let ret_val = Planet {
             radius: initial_data.radius,
             distance_from_sun: initial_data.distance_from_sun,
 
-            vertices: mesh.0.data(),
-            num_vertices: mesh.0.length(),
+            vertices: vertices.as_mut_ptr(),
+            num_vertices: vertices.len() as u32,
             
-            indices: mesh.1.data(),
-            num_indices: mesh.1.length(),
-        }
+            indices: ue4_triangles.as_mut_ptr(),
+            num_indices: ue4_triangles.len() as u32,
+        };
+
+        std::mem::forget(vertices);
+        std::mem::forget(mesh.1);
+
+        ret_val
     }
 }

@@ -6,8 +6,8 @@ use glm::Vector3;
 
 #[repr(C)]
 pub struct Vertex {
-    position: Vector3<f32>,
-    normal: Vector3<f32>,
+    pub position: Vector3<f32>,
+    pub normal: Vector3<f32>,
 }
 
 #[repr(C)]
@@ -19,7 +19,7 @@ pub struct Planet {
     pub vertices: *mut Vertex,
     pub num_vertices: u32,
 
-    pub indices: *mut u32,
+    pub indices: *mut i32,
     pub num_indices: u32,
 }
 

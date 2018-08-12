@@ -63,7 +63,7 @@ pub mod output_data;
 mod initial_planet_data;
 mod icosphere;
 
-use initial_planet_data::InitialPlanetParams;
+use initial_planet_data::*;
 use output_data::*;
 
 
@@ -75,5 +75,5 @@ pub extern "C" fn gen_planet() -> Planet {
 
     println!("serialized = {}", serialized_planet);
 
-    planet
+    Planet::initialize(planet)
 }
