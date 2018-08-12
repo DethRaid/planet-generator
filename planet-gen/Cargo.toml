@@ -17,4 +17,4 @@ serde_json = "1.0.24"
 glm = "0.2.3"
 
 [build-dependencies]
-cbindgen = { path = "../cbindgen" }
+cbindgen = "0.6.1"
