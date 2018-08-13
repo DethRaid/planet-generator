@@ -2,12 +2,11 @@
 
 use std::vec::Vec;
 
-use glm::Vector3;
-
 #[repr(C)]
 pub struct Vertex {
     pub position: [f32; 3],
     pub normal: [f32; 3],
+    pub plate_idx: u32,
 }
 
 #[repr(C)]

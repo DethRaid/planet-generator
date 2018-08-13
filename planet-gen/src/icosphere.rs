@@ -9,7 +9,33 @@ const X: f32 = 0.525731112119133606;
 const Z: f32 = 0.850650808352039932;
 const N: f32 = 0.0;
 
-fn vertex_for_edge(lookup: &mut HashMap<(usize, usize), usize>, vertices: &mut Vec<Vector3<f32>>, first: usize, second: usize) -> usize {
+pub fn make_icosphere(subdivisions: u32) -> (Vec<Vec3>, Vec<[usize; 3]>) {
+    let original_vertices: Vec<Vec3> =
+    vec![
+        Vec3::new(-X, N, Z), Vec3::new(X, N,  Z), Vec3::new(-X,  N, -Z), Vec3::new(X,  N, -Z),
+        Vec3::new(N, Z, X), Vec3::new(N, Z, -X), Vec3::new(N, -Z,   X), Vec3::new(N, -Z, -X),
+        Vec3::new(Z, X, N), Vec3::new(-Z, X, N), Vec3::new(Z, -X,   N), Vec3::new(-Z, -X,  N)
+    ];
+
+    let original_triangles: Vec<[usize; 3]> =
+    vec![
+        [0,  4,  1], [0, 9,  4], [9,  5, 4], [4, 5,  8], [4, 8,  1],
+        [8, 10,  1], [8, 3, 10], [5,  3, 8], [5, 2,  3], [2, 7,  3],
+        [7, 10,  3], [7, 6, 10], [7, 11, 6], [11, 0, 6], [0, 1,  6],
+        [6,  1, 10], [9, 0, 11], [9, 11, 2], [9, 2,  5], [7, 2, 11]
+    ]; 
+
+    let mut mesh_vertices = original_vertices;
+    let mut mesh_triangles = original_triangles;
+
+    for _i in 0..subdivisions {
+        mesh_triangles = subdivide(&mut mesh_vertices, mesh_triangles);
+    }
+
+    (mesh_vertices, mesh_triangles)
+}
+
+fn vertex_for_edge(lookup: &mut HashMap<(usize, usize), usize>, vertices: &mut Vec<Vec3>, first: usize, second: usize) -> usize {
     let mut key = (first, second);
 
     if key.0 > key.1 {
@@ -37,7 +63,7 @@ fn vertex_for_edge(lookup: &mut HashMap<(usize, usize), usize>, vertices: &mut V
     ret_val
 }
 
-fn subdivide(vertices: &mut Vec<Vector3<f32>>, triangles: Vec<[usize; 3]>) -> Vec<[usize; 3]> {
+fn subdivide(vertices: &mut Vec<Vec3>, triangles: Vec<[usize; 3]>) -> Vec<[usize; 3]> {
     let mut lookup: HashMap<(usize, usize), usize> = HashMap::new();
 
     let mut output_indices: Vec<[usize; 3]> = Vec::new();
@@ -55,30 +81,4 @@ fn subdivide(vertices: &mut Vec<Vector3<f32>>, triangles: Vec<[usize; 3]>) -> Ve
     }
 
     return output_indices;
-}
-
-pub fn make_icosphere(subdivisions: u32) -> (Vec<Vector3<f32>>, Vec<[usize; 3]>) {
-    let original_vertices: Vec<Vector3<f32>> =
-    vec![
-        Vector3::new(-X, N, Z), Vector3::new(X, N,  Z), Vector3::new(-X,  N, -Z), Vector3::new(X,  N, -Z),
-        Vector3::new(N, Z, X), Vector3::new(N, Z, -X), Vector3::new(N, -Z,   X), Vector3::new(N, -Z, -X),
-        Vector3::new(Z, X, N), Vector3::new(-Z, X, N), Vector3::new(Z, -X,   N), Vector3::new(-Z, -X,  N)
-    ];
-
-    let original_triangles: Vec<[usize; 3]> =
-    vec![
-        [0,  4,  1], [0, 9,  4], [9,  5, 4], [4, 5,  8], [4, 8,  1],
-        [8, 10,  1], [8, 3, 10], [5,  3, 8], [5, 2,  3], [2, 7,  3],
-        [7, 10,  3], [7, 6, 10], [7, 11, 6], [11, 0, 6], [0, 1,  6],
-        [6,  1, 10], [9, 0, 11], [9, 11, 2], [9, 2,  5], [7, 2, 11]
-    ]; 
-
-    let mut mesh_vertices = original_vertices;
-    let mut mesh_triangles = original_triangles;
-
-    for _i in 0..subdivisions {
-        mesh_triangles = subdivide(&mut mesh_vertices, mesh_triangles);
-    }
-
-    (mesh_vertices, mesh_triangles)
 }

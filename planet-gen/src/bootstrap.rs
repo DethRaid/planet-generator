@@ -2,7 +2,7 @@
 
 use rand::distributions::Normal;
 use rand::Rng;
-use std::cmp::max;
+use std::cmp::{max, min};
 
 use initial_planet_data::*;
 
@@ -10,7 +10,7 @@ use output_data::*;
 
 use icosphere::make_icosphere;
 
-use glm::normalize;
+use glm::*;
 
 /// Radius of Jupiter, in meters
 const RADIUS_OF_JUPITER: u64 = 69911000;
@@ -49,24 +49,58 @@ impl InitialPlanetParams {
 
 impl Planet {
     pub fn initialize(initial_data: InitialPlanetParams) -> Self {
+        let mut rng = rand::thread_rng();
+
         // Vertices around center = 5 * 2^subdivisions
         // length of edge = 2*PI*R / (5 * 2^subdivisions)
         // 5 * 2^subdivisions = 2*PI*R
         // 2^subdivisions = 2*PI*R / 5
         // subdivisions = log2(2*PI*R / 5)
 
-        let subdivisions = (2.0 * std::f64::consts::PI * (initial_data.radius as f64) / 5.0).log2();
+        let subdivisions = (2.0 * std::f64::consts::PI * (initial_data.radius as f64) / (5.0 * 10.0)).log2();
 
-        let mesh = make_icosphere(subdivisions as u32);
+        let mesh: (Vec<Vec3>, Vec<[usize; 3]>) = make_icosphere(min(subdivisions as u32, 5));
 
         let (positions, triangles) = mesh;
 
+        // Assign tectonic plates
+        // Surface area of a sphere is 4*pi*r
+        // Average tectonic plate surface area = 63,759,000 km^2
+        // Number of tectonis plates = ceil(4*PI*R/63759000)
+        let num_plates = (4.0 * std::f64::consts::PI * (initial_data.radius as f64) / 63759000.0).ceil() as usize;
+        let mut plate_centers: Vec<usize> = Vec::new();
+        plate_centers.reserve(num_plates);
+
+        for _i in 0..num_plates {
+            let mut plate_idx = rng.gen_range(0, positions.len());
+
+            while !plate_centers.contains(&plate_idx) {
+                plate_idx = rng.gen_range(0, positions.len());
+            }
+            plate_centers.push(plate_idx);
+        }
+
+        let compare_positions = positions.clone();
+
         let mut vertices: Vec<Vertex> = Vec::new();
-        // This could me a map statement rn, but when I do more complex things for normals and UVs it won't be
+        vertices.reserve(positions.len());
+        // This could be a map statement rn, but when I do more complex things for normals and UVs it won't be
         // Leaving like this for now
         for pos in positions {
+            // Find the tectonic plate center that we're closest to
+            // Will generate roughly circular plates but hopefully they'll squish into something interesting
+            let mut closest_plate_idx = plate_centers[0];
+            for i in 0..plate_centers.len() {
+                let dist_to_new_center = distance(pos, compare_positions[plate_centers[i]]);
+                let dist_to_old_center = distance(pos, compare_positions[plate_centers[closest_plate_idx]]);
+
+                if dist_to_new_center < dist_to_old_center {
+                    closest_plate_idx = i;
+                }
+            }
+
             let normal = normalize(pos);
-            vertices.push(Vertex{ position: [pos.x, pos.y, pos.z], normal: [normal.x, normal.y, normal.z] });
+            vertices.push(Vertex{ position: [pos.x, pos.y, pos.z], normal: [normal.x, normal.y, normal.z], plate_idx: closest_plate_idx as u32 });
         }
 
         let mut ue4_triangles: Vec<i32> = Vec::new();
