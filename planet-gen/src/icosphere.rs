@@ -16,19 +16,20 @@ fn vertex_for_edge(lookup: &mut HashMap<(usize, usize), usize>, vertices: &mut V
         key = (key.1, key.0);
     }
 
-    let inserted = lookup.insert(key, vertices.len());
+    let existing_val = lookup.insert(key, vertices.len());
     let mut ret_val: usize = 0;
 
-    match inserted {
+    match existing_val {
         None => {
-            ret_val = lookup[&key];
-        },
-        Some(x) =>  {
+            // The map did not have the key present. Nothing was inserted
             let edge0 = vertices[first];
             let edge1 = vertices[second];
             let point = normalize(edge0 + edge1);
             vertices.push(point);
 
+            ret_val = lookup[&key];
+        },
+        Some(x) =>  {
             ret_val = x;
         }
     }
@@ -39,21 +40,21 @@ fn vertex_for_edge(lookup: &mut HashMap<(usize, usize), usize>, vertices: &mut V
 fn subdivide(vertices: &mut Vec<Vector3<f32>>, triangles: Vec<[usize; 3]>) -> Vec<[usize; 3]> {
     let mut lookup: HashMap<(usize, usize), usize> = HashMap::new();
 
-    let mut result: Vec<[usize; 3]> = Vec::new();
+    let mut output_indices: Vec<[usize; 3]> = Vec::new();
 
-    for each in triangles {
+    for triangle in triangles {
         let mut mid: [usize; 3] = [0, 0, 0];
         for edge in 0..3 {
-            mid[edge] = vertex_for_edge(&mut lookup, vertices, each[edge], each[(edge + 1) % 3]);
+            mid[edge] = vertex_for_edge(&mut lookup, vertices, triangle[edge], triangle[(edge + 1) % 3]);
         }
 
-        result.push([each[0], mid[0], mid[2]]);
-        result.push([each[1], mid[1], mid[0]]);
-        result.push([each[2], mid[2], mid[1]]);
-        result.push([ mid[0], mid[1], mid[2]]);
+        output_indices.push([triangle[0], mid[0], mid[2]]);
+        output_indices.push([triangle[1], mid[1], mid[0]]);
+        output_indices.push([triangle[2], mid[2], mid[1]]);
+        output_indices.push([ mid[0], mid[1], mid[2]]);
     }
 
-    return result;
+    return output_indices;
 }
 
 pub fn make_icosphere(subdivisions: u32) -> (Vec<Vector3<f32>>, Vec<[usize; 3]>) {

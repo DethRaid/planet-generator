@@ -49,7 +49,7 @@ impl InitialPlanetParams {
 
 impl Planet {
     pub fn initialize(initial_data: InitialPlanetParams) -> Self {
-        let mesh = make_icosphere(3);
+        let mesh = make_icosphere(1);
 
         let (positions, triangles) = mesh;
 
@@ -58,7 +58,7 @@ impl Planet {
         // Leaving like this for now
         for pos in positions {
             let normal = normalize(pos);
-            vertices.push(Vertex{ position: [pos.X, pos.Y, pos.Z], normal: [normal.X, normal.Y, normal.z] });
+            vertices.push(Vertex{ position: [pos.x, pos.y, pos.z], normal: [normal.x, normal.y, normal.z] });
         }
 
         let mut ue4_triangles: Vec<i32> = Vec::new();
