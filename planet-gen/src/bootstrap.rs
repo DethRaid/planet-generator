@@ -49,7 +49,15 @@ impl InitialPlanetParams {
 
 impl Planet {
     pub fn initialize(initial_data: InitialPlanetParams) -> Self {
-        let mesh = make_icosphere(1);
+        // Vertices around center = 5 * 2^subdivisions
+        // length of edge = 2*PI*R / (5 * 2^subdivisions)
+        // 5 * 2^subdivisions = 2*PI*R
+        // 2^subdivisions = 2*PI*R / 5
+        // subdivisions = log2(2*PI*R / 5)
+
+        let subdivisions = (2.0 * std::f64::consts::PI * (initial_data.radius as f64) / 5.0).log2();
+
+        let mesh = make_icosphere(subdivisions as u32);
 
         let (positions, triangles) = mesh;
 
